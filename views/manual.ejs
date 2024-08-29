@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Student</title>
+</head>
+<body>
+    <h1>Search for Student Information</h1>
+    <form action="/searchStudent" method="POST">
+        <label for="studentId">Enter Student ID:</label>
+        <input type="text" id="studentId" name="rolll" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <% if (stm) { %>
+        <h2>Student Information</h2>
+        <p><strong>Full Name:</strong> <%= stm.fullname %></p>
+        <p><strong>Email:</strong> <%= stm.email %></p>
+        <p><strong>Roll Number:</strong> <%= stm.roll %></p>
+        <p><strong>Class:</strong> <%= stm.classs %></p>
+        <p><strong>QR Code:</strong></p>
+        <img src="<%= stm.qrCode %>" alt="QR Code" />
+    <% } else if (notFound) { %>
+        <p>No student found with the given roll number.</p>
+    <% } else { %>
+        <p>Please enter a student ID to search for information.</p>
+    <% } %>
+    
+    
+</body>
+</html>

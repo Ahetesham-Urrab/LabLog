@@ -3,14 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>All Student Information</title>
 </head>
 <body>
-    <h1>Student Information</h1>
-    <h4>Name : <%= student.fullname %></h4>
-    <h4>Email : <%= student.email %></h4>
-    <h4>Roll Number : <%= student.roll %></h4>
-    <h4>Class : <%= student.classs %></h4>
-    <h4>ID : <%= student._id %></h4>
+    <h1>All Student Information</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Roll Number</th>
+                <th>Class</th>
+                <th>QR Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% stud.forEach(student => { %>
+            <tr>
+                <td><%= student.fullname %></td>
+                <td><%= student.email %></td>
+                <td><%= student.roll %></td>
+                <td><%= student.classs %></td>
+                <td><img src="<%= student.qrCode %>" alt="QR Code" /></td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
 </body>
 </html>

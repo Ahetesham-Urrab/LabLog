@@ -78,4 +78,29 @@ router.get('/allStudInfo',async (req,res)=>{
   res.render('allInfo', {stud});
 });
 
+router.get('/Attman', (req, res) => {
+  res.render('manual', { stm: null, notFound: null });
+});
+
+
+router.post('/searchStudent', async (req, res) => {
+  const { rolll } = req.body;
+  try {
+      const stm = await studentModel.findOne({ roll: rolll });
+
+      if (stm) {
+          res.render('manual', { stm, notFound: null }); // Passing 'stm' and 'notFound'
+      } else {
+          res.render('manual', { stm: null, notFound: true }); // Passing 'notFound' as true
+      }
+  } catch (err) {
+      console.error(err);
+      res.status(500).send("Server Error");
+  }
+});
+
+
+
+
+
 module.exports = router;
