@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const studentModel = require('../model/student');
+const batchModel = require('../model/batch'); 
 const QR = require('qrcode');
 const multer = require('multer');
 const xlsx = require('xlsx');
@@ -99,7 +100,32 @@ router.post('/searchStudent', async (req, res) => {
   }
 });
 
+router.post('/addBatch', async (req, res) => {
+  try {
+    const { batchName, teacherName, subject, classTime } = req.body;
+    const batch = new batchModel({ batchName, teacherName, subject, classTime });
+    await batch.save();
 
+    res.redirect('/batches'); // Redirect to view all batches
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// Show all batches
+router.get('/batches', async (req, res, next) => {
+  try {
+    const batches = await batchModel.find();
+    res.render('batchList', { batches });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// Display batch creation form
+router.get('/createBatch', (req, res) => {
+  res.render('createBatch');
+});
 
 
 
