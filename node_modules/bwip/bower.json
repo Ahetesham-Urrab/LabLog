@@ -1,0 +1,28 @@
+{
+  "name": "bwip",
+  "main": "bwip-min.js",
+  "version": "0.7.1",
+  "authors": [
+    "heartyoh <heartyoh@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "*.gemspec",
+    "*.gem",
+    "Gemfile",
+    "Gruntfile.js",
+    "package.json",
+    "Rakefile",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "lib",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "chai": ">=1.8.0",
+    "mocha": ">=1.14.0"
+  }
+}

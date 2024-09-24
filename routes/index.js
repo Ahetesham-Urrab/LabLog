@@ -2,10 +2,11 @@ var express = require('express');
 var router = express.Router();
 const studentModel = require('../model/student');
 const batchModel = require('../model/batch'); 
+const AttModule = require('../model/attandance');
 const QR = require('qrcode');
 const multer = require('multer');
 const xlsx = require('xlsx');
-
+const bwipjs = require('bwip-js');
 // Configure Multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
@@ -20,23 +21,23 @@ router.get('/', function (req, res, next) {
   res.render('index');
 });
 
-router.post('/add', async (req, res) => {
-  try {
+// router.post('/add', async (req, res) => {
+//   try {
 
-    const { fullname, email, roll, classs } = req.body;
-    const student = new studentModel({ fullname, email, roll, classs });
-    await student.save();
+//     const { fullname, email, roll, classs } = req.body;
+//     const student = new studentModel({ fullname, email, roll, classs });
+//     await student.save();
 
-    const qr = await QR.toDataURL(student._id.toString());
-    student.qrCode = qr;
-    await student.save();
+//     const qr = await QR.toDataURL(student._id.toString());
+//     student.qrCode = qr;
+//     await student.save();
 
-    res.redirect('/attandance');
+//     res.redirect('/attandance');
 
-  } catch (error) {
-    res.send(500).send(error.message);
-  }
-});
+//   } catch (error) {
+//     res.send(500).send(error.message);
+//   }
+// });
 
 router.get('/attandance', async (req, res, next) => {
   try {
@@ -48,32 +49,248 @@ router.get('/attandance', async (req, res, next) => {
     res.send(500).send(error.message);
   }
 });
-
-router.get('/student/:id', async (req, res, next) => {
+router.get('/attandance2', async (req, res, next) => {
   try {
-    const sId = req.params.id;
-    const student = await studentModel.findById(sId);
-    res.render('sinfo', {student});
+    
+    const students = await studentModel.find();
+    res.render('ckout', {students});
 
   } catch (error) {
     res.send(500).send(error.message);
   }
 });
+
+router.get('/student/:sid', async (req, res, next) => {
+  try {
+    const sid = req.params.sid;
+
+    // Find student by SID
+    const student = await studentModel.findOne({ sid });
+
+    if (student) {
+      // Check for active attendance record
+      const attendanceRecord = await AttModule.findOne({ student: student._id, checkedOut: false });
+
+      if (attendanceRecord) {
+        // If already checked in, show a message
+        res.render('sinfo', { student, attendance: attendanceRecord, message: 'Already checked in.' });
+      } else {
+        // If not checked in, create a new attendance record
+        const newAttendance = new AttModule({
+          student: student._id,
+          checkInTime: new Date(),
+          status: 'Present',
+        });
+        await newAttendance.save();
+        res.render('sinfo', { student, attendance: newAttendance, message: 'Check-in successful!' });
+      }
+    } else {
+      res.status(404).send('Student not found');
+    }
+
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// router.get('/studentout/:sid', async (req, res) => {
+//   try {
+//     const sid = req.params.sid;
+
+//     // Find student by SID
+//     const student = await studentModel.findOne({ sid });
+
+//     if (student) {
+//       // Find the attendance record for the student that is not checked out
+//       const attendanceRecord = await AttModule.findOne({ student: student._id, checkedOut: false });
+
+//       if (attendanceRecord) {
+//         const currentTime = new Date();
+//         const checkInTime = attendanceRecord.checkInTime;
+//         const timeDifference = (currentTime - checkInTime) / 1000 / 60; // Difference in minutes
+//         var totalTime = 0;
+//         // Check if the student has been checked in for at least 10 minutes
+//         if (timeDifference < 1) {
+//           res.render('sinfo', {
+//             student,
+//             attendance: attendanceRecord,
+//             message: 'You must wait at least 10 minutes before checking out.',
+//             totalTime: null,
+//           });
+//           return; // Exit early if under 10 minutes
+//         }
+
+//         // Update the checkout time
+//         attendanceRecord.checkOutTime = currentTime;
+//         attendanceRecord.checkedOut = true; // Mark as checked out
+//         await attendanceRecord.save();
+
+//         // Calculate total time spent in the lab
+//          totalTime = Math.abs(attendanceRecord.checkOutTime - attendanceRecord.checkInTime); // Difference in milliseconds
+//         const totalMinutes = Math.floor(totalTime / 60000);
+//         const totalHours = Math.floor(totalMinutes / 60);
+//         const remainingMinutes = totalMinutes % 60;
+
+//         // Render the student info page with updated attendance record and total time
+//         res.render('sinfo', {
+//           student,
+//           attendance: attendanceRecord,
+//           message: 'Checked out time saved successfully!',
+//           totalTime: { hours: totalHours, minutes: remainingMinutes },
+//         });
+//       } else {
+//         res.render('sinfo', { student, message: 'No active check-in record found for this student.' });
+//       }
+//     } else {
+//       res.status(404).send('Student not found');
+//     }
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//   }
+// });
+router.get('/studentout/:sid', async (req, res) => {
+  try {
+    const sid = req.params.sid;
+
+    // Find student by SID
+    const student = await studentModel.findOne({ sid });
+
+    if (student) {
+      // Find the attendance record for the student that is not checked out
+      const attendanceRecord = await AttModule.findOne({ student: student._id, checkedOut: false });
+
+      if (attendanceRecord) {
+        const currentTime = new Date();
+        const checkInTime = attendanceRecord.checkInTime;
+        const timeDifference = (currentTime - checkInTime) / 1000 / 60; // Difference in minutes
+
+        let totalTime = null; // Ensure totalTime is defined
+        // Check if the student has been checked in for at least 10 minutes
+        if (timeDifference < 1) {
+          res.render('sinfo', {
+            student,
+            attendance: attendanceRecord,
+            message: 'You must wait at least 10 minutes before checking out.',
+            totalTime: null, // Send as null or default object
+          });
+          return; // Exit early if under 10 minutes
+        }
+
+        // Update the checkout time
+        attendanceRecord.checkOutTime = currentTime;
+        attendanceRecord.checkedOut = true; // Mark as checked out
+        await attendanceRecord.save();
+
+        // Calculate total time spent in the lab
+        totalTime = Math.abs(attendanceRecord.checkOutTime - attendanceRecord.checkInTime); // Difference in milliseconds
+        const totalMinutes = Math.floor(totalTime / 60000);
+        const totalHours = Math.floor(totalMinutes / 60);
+        const remainingMinutes = totalMinutes % 60;
+
+        // Render the student info page with updated attendance record and total time
+        res.render('sinfo', {
+          student,
+          attendance: attendanceRecord,
+          message: 'Checked out time saved successfully!',
+          totalTime: { hours: totalHours, minutes: remainingMinutes }, // Pass totalTime as an object
+        });
+      } else {
+        res.render('sinfo', {
+          student,
+          attendance: null,
+          message: 'No active check-in record found for this student.',
+          totalTime: null, // Send totalTime as null
+        });
+      }
+    } else {
+      res.status(404).send('Student not found');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+
 router.get('/excel', (req, res) => {
   res.render('excel');
 });
-router.post('/upload', upload.single('excel'), (req, res) => {
-  const file = req.file;
-  const workbook = xlsx.readFile(file.path);
-  const sheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[sheetName];
-  const students = xlsx.utils.sheet_to_json(worksheet);
+router.post('/upload', upload.single('excel'), async (req, res) => {
+  try {
+    const file = req.file;
+    const workbook = xlsx.readFile(file.path);
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const students = xlsx.utils.sheet_to_json(worksheet);
 
-  // Insert data into the database
-  studentModel.insertMany(students)
-      .then(() => res.send('Student data saved successfully!'))
-      .catch((error) => res.status(500).send('Error saving data'));
+    // Prepare an array to hold the promises for saving students
+    const savePromises = students.map(async (student) => {
+      if (!student.sid) {
+        console.error('SID is missing for student:', student);
+        throw new Error('SID is missing');
+      }
+
+      const sidString = String(student.sid);
+
+      // Generate barcode
+      const barcodeBuffer = await new Promise((resolve, reject) => {
+        bwipjs.toBuffer({
+          bcid: 'code128',
+          text: sidString,
+          scale: 3,
+          height: 10,
+          includetext: true,
+          textxalign: 'center',
+        }, (err, png) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(png);
+          }
+        });
+      });
+
+      const barcodeDataUrl = `data:image/png;base64,${barcodeBuffer.toString('base64')}`;
+
+      // Create student data
+      const studentData = new studentModel({
+        fullname: student.fullname,
+        email: student.email,
+        roll: student.roll,
+        classs: student.classs,
+        sid: sidString,
+        barcode: barcodeDataUrl,
+      });
+
+      return studentData.save();
+    });
+
+    // Wait for all students to be saved
+    await Promise.all(savePromises);
+
+    // Fetch all students from the database to display
+    const allStudents = await studentModel.find({});
+
+    // Render the EJS template with the student data
+    res.render('allInfo', { students: allStudents });
+
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).send('Error saving data');
+  }
 });
+
+// router.post('/upload', upload.single('excel'), (req, res) => {
+//   const file = req.file;
+//   const workbook = xlsx.readFile(file.path);
+//   const sheetName = workbook.SheetNames[0];
+//   const worksheet = workbook.Sheets[sheetName];
+//   const students = xlsx.utils.sheet_to_json(worksheet);
+
+//   // Insert data into the database
+//   studentModel.insertMany(students)
+//       .then(() => res.send('Student data saved successfully!'))
+//       .catch((error) => res.status(500).send('Error saving data'));
+// });
 router.get('/allStudInfo',async (req,res)=>{
   const stud = await studentModel.find();
   res.render('allInfo', {stud});

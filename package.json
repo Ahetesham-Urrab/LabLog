@@ -6,12 +6,17 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bwip": "^0.7.1",
+    "bwip-js": "^4.5.1",
+    "canvas": "^2.11.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "install": "^0.13.0",
+    "js": "^0.1.0",
+    "jsbarcode": "^3.11.6",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.2",
     "morgan": "~1.9.1",

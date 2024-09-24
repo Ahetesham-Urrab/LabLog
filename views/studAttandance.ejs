@@ -16,13 +16,6 @@
 
 <body>
     <h1>Student Attendance</h1>
-    <ul>
-        <% students.forEach(s=> { %>
-            <li>
-                <%= s.fullname %> - <img src="<%= s.qrCode %>" alt="QR Code">
-            </li>
-            <% }) %>
-    </ul>
     <div id="reader"></div>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script>

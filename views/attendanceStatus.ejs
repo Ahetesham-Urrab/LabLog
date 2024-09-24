@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Information</title>
+</head>
+<body>
+  <h1>Student Information</h1>
+  <h2>Name: <%= student.fullname %></h2>
+  <h3>Roll: <%= student.roll %></h3>
+  <h4>Attendance Status: <%= student.attendanceStatus %></h4>
+  
+  <h3>Login Times:</h3>
+  <ul>
+    <% student.attendance.forEach(record => { %>
+      <li>Login Time: <%= record.loginTime %></li> <!-- Displays only time -->
+    <% }) %>
+  </ul>
+</body>
+</html>

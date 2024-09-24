@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Student Information</title>
+    <title>Students List</title>
 </head>
 <body>
-    <h1>All Student Information</h1>
+    <h1>Students List</h1>
     <table border="1">
         <thead>
             <tr>
@@ -14,18 +14,20 @@
                 <th>Email</th>
                 <th>Roll Number</th>
                 <th>Class</th>
-                <th>QR Code</th>
+                <th>SID</th>
+                <th>Barcode</th>
             </tr>
         </thead>
         <tbody>
-            <% stud.forEach(student => { %>
-            <tr>
-                <td><%= student.fullname %></td>
-                <td><%= student.email %></td>
-                <td><%= student.roll %></td>
-                <td><%= student.classs %></td>
-                <td><img src="<%= student.qrCode %>" alt="QR Code" /></td>
-            </tr>
+            <% students.forEach(student => { %>
+                <tr>
+                    <td><%= student.fullname %></td>
+                    <td><%= student.email %></td>
+                    <td><%= student.roll %></td>
+                    <td><%= student.classs %></td>
+                    <td><%= student.sid %></td>
+                    <td><img src="<%= student.barcode %>" alt="Barcode" /></td>
+                </tr>
             <% }); %>
         </tbody>
     </table>

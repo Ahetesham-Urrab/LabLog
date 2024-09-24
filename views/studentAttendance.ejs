@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Attendance</title>
+</head>
+<body>
+  <h1>Attendance for <%= student.fullname %> (SID: <%= student.sid %>)</h1>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Login Time</th>
+        <th>Logout Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% student.attendance.forEach(record => { %>
+        <tr>
+          <td><%= record.loginTime ? new Date(record.loginTime).toLocaleString() : 'N/A' %></td>
+          <td><%= record.logoutTime ? new Date(record.logoutTime).toLocaleString() : 'Still logged in' %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

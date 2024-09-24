@@ -3,14 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Student Information</title>
 </head>
 <body>
-    <h1>Student Information</h1>
-    <h4>Name : <%= student.fullname %></h4>
-    <h4>Email : <%= student.email %></h4>
-    <h4>Roll Number : <%= student.roll %></h4>
-    <h4>Class : <%= student.classs %></h4>
-    <h4>ID : <%= student._id %></h4>
+  <a href="/attandance2">Back to Attendance</a>
+  <h1>Student Information</h1>
+  <p>Name: <%= student.fullname %></p>
+  <p>SID: <%= student.sid %></p>
+  <p>Roll No.: <%= student.roll %></p>
+  <p>Class: <%= student.classs %></p>
+  <p>Email: <%= student.email %></p>
+  
+  <% if (attendance) { %>
+    <h2>Attendance Status</h2>
+    <p>Status: <%= attendance.status %></p>
+    <p>Check-In Time: <%= attendance.checkInTime.toLocaleTimeString() %></p>
+    <p>Check-Out Time: <%= attendance.checkOutTime ? attendance.checkOutTime.toLocaleTimeString() : 'Not checked out yet' %></p>
+    
+    <% if (attendance.checkedOut && totalTime) { %>
+      <h2>Total Time Spent in Lab</h2>
+      <p><%= totalTime.hours %> hours and <%= totalTime.minutes %> minute</p>
+    <% } else if (attendance.checkedOut) { %>
+      <p>Total time not available.</p>
+    <% } %>
+    
+  <% } else { %>
+    <h2>Attendance Status</h2>
+    <p>Status: Absent</p>
+  <% } %>
+
+  <% if (message) { %>
+    <p><strong><%= message %></strong></p>
+  <% } %>
+  
 </body>
 </html>
