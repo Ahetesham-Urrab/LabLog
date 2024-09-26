@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students in <%= batch.name %></title>
+</head>
+<body>
+    <h1>Students in <%= batch.name %></h1>
+    <a href="/batches">Back to Batches</a> <!-- Link to go back to batches list -->
+
+    <% if (batch.students.length > 0) { %>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Roll No.</th>
+                    <th>Class</th>
+                    <th>Student Id</th>
+                    <th>BAR Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% batch.students.forEach(student => { %>
+                    <tr>
+                        <td><%= student.fullname %></td>
+                        <td><%= student.email %></td>
+                        <td><%= student.roll %></td>
+                        <td><%= student.classs %></td>
+                        <td><%= student.sid %></td>
+                        <td><img src="<%= student.barcode %>" style="width: 70%;"></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>No students found in this batch.</p>
+    <% } %>
+</body>
+</html>

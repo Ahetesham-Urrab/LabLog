@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batches Created Successfully</title>
+</head>
+<body>
+    <h1><%= message %></h1>
+    
+    <h2>Batches Created</h2>
+    <% batchDetails.forEach(batch => { %>
+        <div>
+            <h3><%= batch.batchName %></h3>
+            <p><strong>Batch ID:</strong> <%= batch.batchId %></p>
+            <p><strong>Total Students:</strong> <%= batch.totalStudents %></p>
+            <h4>Student Details:</h4>
+            <ul>
+                <% batch.students.forEach(student => { %>
+                    <li>
+                        <strong>Name:</strong> <%= student.fullname %>, 
+                        <strong>Email:</strong> <%= student.email %>, 
+                        <strong>Roll No:</strong> <%= student.roll %>, 
+                        <strong>Class:</strong> <%= student.classs %>, 
+                        <strong>SID:</strong> <%= student.sid %>
+                    </li>
+                <% }); %>
+            </ul>
+        </div>
+    <% }); %>
+
+    <a href="/create-batch-form">Create Another Batch</a> <!-- Link to the form for creating a new batch -->
+</body>
+</html>

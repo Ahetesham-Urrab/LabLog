@@ -1,0 +1,28 @@
+<!-- views/create-batch.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Batch</title>
+</head>
+<body>
+    <h1>Create Batch</h1>
+    <form action="/create-batch" method="POST" enctype="multipart/form-data">
+        <label for="name">Batch Name:</label>
+        <input type="text" name="name" required>
+        <br>
+        <label for="timing">Timing:</label>
+        <input type="text" name="timing" required>
+        <br>
+        <label for="teacher">Teacher:</label>
+        <input type="text" name="teacher" required>
+        <br>
+        <label for="studentFile">Upload Student Excel File:</label>
+        <input type="file" name="studentFile" accept=".xlsx" required>
+        <br>
+        <button type="submit">Create Batch</button>
+    </form>
+    <a href="/create-batch">Back to Attendance</a>
+</body>
+</html>

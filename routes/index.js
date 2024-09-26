@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const studentModel = require('../model/student');
-const batchModel = require('../model/batch'); 
+const studentModel = require('../model/student'); 
 const AttModule = require('../model/attandance');
+const BatchModule = require('../model/batch');
 const QR = require('qrcode');
 const multer = require('multer');
 const xlsx = require('xlsx');
@@ -20,6 +20,28 @@ const upload = multer({ storage });
 router.get('/', function (req, res, next) {
   res.render('index');
 });
+router.get('/students',async function (req, res, next) {
+  try {
+    let students = await studentModel.find(); // Replace with your actual data fetching logic
+
+    // Remove duplicate students based on email
+    const uniqueStudents = [];
+    const emailSet = new Set();
+
+    students.forEach(student => {
+        if (!emailSet.has(student.email)) {
+            uniqueStudents.push(student);
+            emailSet.add(student.email);
+        }
+    });
+
+    res.render('std', { students: uniqueStudents });
+} catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+}
+});
+
 
 // router.post('/add', async (req, res) => {
 //   try {
@@ -271,7 +293,7 @@ router.post('/upload', upload.single('excel'), async (req, res) => {
     const allStudents = await studentModel.find({});
 
     // Render the EJS template with the student data
-    res.render('allInfo', { students: allStudents });
+    res.render('std', { students: allStudents });
 
   } catch (error) {
     console.error('Error saving data:', error);
@@ -329,21 +351,139 @@ router.post('/addBatch', async (req, res) => {
   }
 });
 
-// Show all batches
-router.get('/batches', async (req, res, next) => {
-  try {
-    const batches = await batchModel.find();
-    res.render('batchList', { batches });
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
 // Display batch creation form
 router.get('/createBatch', (req, res) => {
   res.render('createBatch');
 });
 
+//----------------------------------------
+router.get('/present-students', async (req, res) => {
+  try {
+    // Find all attendance records
+    const attendanceRecords = await AttModule.find({}).populate('student');
 
+    // Create a map to store the latest attendance record for each student
+    const latestAttendance = {};
+
+    attendanceRecords.forEach((attendance) => {
+      const studentId = attendance.student._id.toString();
+      // Check if the student already exists in the map
+      if (!latestAttendance[studentId] || 
+          attendance.checkInTime > latestAttendance[studentId].checkInTime) {
+        latestAttendance[studentId] = attendance; // Store the latest record
+      }
+    });
+
+    // Convert the map to an array
+    const presentStudents = Object.values(latestAttendance).map(attendance => ({
+      student: attendance.student,
+      checkInTime: attendance.checkInTime,
+      checkOutTime: attendance.checkOutTime,
+      checkedOut: attendance.checkedOut,
+    }));
+
+    // Render the page with present students data
+    res.render('presentStudents', { presentStudents });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+
+//------------------------------------------------------------------------//
+router.get('/create-batch', (req, res) => {
+  res.render('create-batch'); // Render the form for creating a batch
+});
+
+// Handle batch creation and student upload
+router.post('/create-batch', upload.single('studentFile'), async (req, res) => {
+  try {
+      const { name, timing, teacher } = req.body;
+
+      // Read the uploaded Excel file
+      const workbook = xlsx.readFile(req.file.path);
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+
+      // Convert sheet to JSON
+      const students = xlsx.utils.sheet_to_json(sheet);
+
+      // Calculate the number of students per batch
+      const numberOfBatches = 3;
+      const batchSize = Math.ceil(students.length / numberOfBatches);
+      
+      // Create batches and assign students
+      const batchDetails = [];
+      for (let i = 0; i < numberOfBatches; i++) {
+          const batchStudents = students.slice(i * batchSize, (i + 1) * batchSize);
+
+          // Create the batch
+          const batch = await BatchModule.create({
+              name: `${name} - Batch ${i + 1}`, // Unique name for each batch
+              timing,
+              teacher,
+              students: [] // Initialize an empty array for student IDs
+          });
+
+          // Insert students into the database and associate with the batch
+          const studentPromises = batchStudents.map(async (studentData) => {
+              const student = await studentModel.create(studentData);
+              batch.students.push(student._id);
+              return student; // Return the created student for later use
+          });
+
+          const createdStudents = await Promise.all(studentPromises);
+          await batch.save();
+
+          // Store batch details including student info
+          batchDetails.push({
+              batchId: batch._id,
+              batchName: batch.name,
+              totalStudents: createdStudents.length,
+              students: createdStudents
+          });
+      }
+
+      // Render the success view with batch details
+      res.render('success', {
+          message: 'Batches created successfully',
+          batchDetails,
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).render('error', { message: 'Error creating batches', error: error.message });
+  }
+});
+
+router.get('/success', function (req, res, next) {
+  res.render('success');
+});
+//------------------------------------------------------------------//
+// Assuming you have BatchModule imported
+router.get('/batches', async (req, res) => {
+  try {
+      // Fetch all batches from the database
+      const batches = await BatchModule.find().populate('students'); // Populate with student details if needed
+
+      // Render the batches view with the fetched batches
+      res.render('batches', { batches });
+  } catch (error) {
+      console.error(error);
+      res.status(500).render('error', { message: 'Error fetching batches', error: error.message });
+  }
+});
+
+router.get('/batches/:id/students', async (req, res) => {
+  try {
+      const batch = await BatchModule.findById(req.params.id).populate('students'); // Populate student details
+      if (!batch) {
+          return res.status(404).send('Batch not found');
+      }
+      res.render('batchStudents', { batch }); // Render a new EJS file for student details
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Error retrieving batch students');
+  }
+});
 
 module.exports = router;

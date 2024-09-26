@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Present Students</title>
+</head>
+<body>
+    <h1>Present Students</h1>
+    <a href="/attendance2">Back to Attendance</a>
+
+    <% if (presentStudents.length > 0) { %>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>SID</th>
+                    <th>Check-In Time</th>
+                    <th>Check-Out Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% presentStudents.forEach(({ student, checkInTime, checkOutTime }) => { %>
+                    <tr>
+                        <td><%= student.fullname %></td>
+                        <td><%= student.sid %></td>
+                        <td><%= checkInTime.toLocaleTimeString() %></td>
+                        <td><%= checkOutTime ? checkOutTime.toLocaleTimeString() : 'Not checked out yet' %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>No students are currently present.</p>
+    <% } %>
+</body>
+</html>
