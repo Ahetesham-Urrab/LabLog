@@ -1,0 +1,41 @@
+ <h1>Student Information</h1>
+        <p><strong>Name:</strong> <%= student.fullname %></p>
+        <p><strong>SID:</strong> <%= student.sid %></p>
+        <p><strong>Roll No.:</strong> <%= student.roll %></p>
+        <p><strong>Class:</strong> <%= student.classs %></p>
+        <p><strong>Email:</strong> <%= student.email %></p>
+
+        <% if (attendance) { %>
+            <h2>Attendance Status</h2>
+            <p class="status"><strong>Status:</strong> <%= attendance.status %></p>
+            <p class="time"><strong>Check-In Time:</strong> <%= attendance.checkInTime.toLocaleTimeString() %></p>
+            <p class="time"><strong>Check-Out Time:</strong> <%= attendance.checkOutTime ? attendance.checkOutTime.toLocaleTimeString() : 'Not checked out yet' %></p>
+
+            <% if (attendance.checkedOut && totalTime) { %>
+                <h2>Total Time Spent in Lab</h2>
+                <p class="time"><strong><%= totalTime.hours %> hours and <%= totalTime.minutes %> minutes</strong></p>
+            <% } else if (attendance.checkedOut) { %>
+                <p class="status">Total time not available.</p>
+            <% } %>
+        <% } else { %>
+            <h2>Attendance Status</h2>
+            <p class="absent">Status: Absent</p>
+        <% } %>
+
+        <% if (message) { %>
+            <p class="message"><%= message %></p>
+        <% } %>
+
+
+
+
+        <% if (attendance.checkedOut && totalTime) { %>
+            <h4>Total Time Spent in Lab</h4>
+            <p class="time2"><strong><%= totalTime.hours %> hours and <%= totalTime.minutes %> minutes</strong></p>
+        <% } else if (attendance.checkedOut) { %>
+            <p class="status">- -</p>
+        <% } %>
+    <% } else { %>
+        <h2></h2>
+        <p class="absent"></p>
+    <% } %>

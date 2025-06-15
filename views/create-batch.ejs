@@ -1,4 +1,3 @@
-<!-- views/create-batch.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,15 +11,37 @@
         <label for="name">Batch Name:</label>
         <input type="text" name="name" required>
         <br>
+        
         <label for="timing">Timing:</label>
         <input type="text" name="timing" required>
         <br>
+        
         <label for="teacher">Teacher:</label>
         <input type="text" name="teacher" required>
         <br>
+        
         <label for="studentFile">Upload Student Excel File:</label>
         <input type="file" name="studentFile" accept=".xlsx" required>
         <br>
+        
+        <!-- Days selection -->
+        <label for="days">Select Days:</label>
+        <br>
+        <input type="checkbox" name="days" value="Monday"> Monday
+        <br>
+        <input type="checkbox" name="days" value="Tuesday"> Tuesday
+        <br>
+        <input type="checkbox" name="days" value="Wednesday"> Wednesday
+        <br>
+        <input type="checkbox" name="days" value="Thursday"> Thursday
+        <br>
+        <input type="checkbox" name="days" value="Friday"> Friday
+        <br>
+        <input type="checkbox" name="days" value="Saturday"> Saturday
+        <br>
+        <input type="checkbox" name="days" value="Sunday"> Sunday
+        <br>
+        
         <button type="submit">Create Batch</button>
     </form>
     <a href="/create-batch">Back to Attendance</a>

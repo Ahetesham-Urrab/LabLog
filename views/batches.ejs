@@ -13,8 +13,9 @@
             <tr>
                 <th>Batch Name</th>
                 <th>Timing</th>
+                <th>Days</th>
                 <th>Total Students</th>
-                <th>Action</th> <!-- New column for action links -->
+                <th>View Students</th> <!-- Column for viewing students -->
             </tr>
         </thead>
         <tbody>
@@ -22,15 +23,14 @@
                 <tr>
                     <td><%= batch.name %></td>
                     <td><%= batch.timing %></td>
-                    <td><%= batch.students.length %></td> <!-- Count of students in the batch -->
-                    <td>
-                        <a href="/batches/<%= batch._id %>/students">View Students</a> <!-- Link to view students -->
-                    </td>
+                    <td><%= batch.days.join(', ') %></td> <!-- Display batch days -->
+                    <td><%= batch.students.length %></td> <!-- Count of students -->
+                    <td><a href="/batch/<%= batch._id %>/students">View Students</a></td> <!-- Link to view students -->
                 </tr>
             <% }); %>
         </tbody>
     </table>
 
-    <a href="/create-batch">Create a New Batch</a> <!-- Link to the form for creating a new batch -->
+    <a href="/create-batch">Create a New Batch</a> <!-- Link to create new batch -->
 </body>
 </html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1, h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Attendance Report</h1>
+    <h2>Date: {{date}}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>SID</th>
+                <th>Email</th>
+                <th>Roll No.</th>
+                <th>Class</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Total Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each records}}
+            <tr>
+                <td>{{this.student.fullname}}</td>
+                <td>{{this.student.sid}}</td>
+                <td>{{this.student.email}}</td>
+                <td>{{this.student.roll}}</td>
+                <td>{{this.student.classs}}</td>
+                <td>{{this.checkInTime}}</td>
+                <td>{{this.checkOutTime}}</td>
+                <td>{{this.totalTime}}</td>
+                <td>{{this.status}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</body>
+</html>

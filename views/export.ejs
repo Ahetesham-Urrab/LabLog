@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance</title>
+    <style>
+        /* Existing styles */
+        @font-face {
+            font-family: fff;
+            src: url(/sounds/Syne-Extra.otf);
+        }
+
+        @font-face {
+            font-family: primary;
+            src: url(/sounds/Syne-Bold.otf);
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .main {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            background-color: #1f40c3;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            padding-top: 20px;
+            color: #f7f7f7;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            z-index: 99;
+            background-color: #1f40c3;
+            border-right: 1px solid #010101;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 2.8vw;
+            font-family: fff;
+            color: #EFEFD7;
+        }
+
+        .sidebar a {
+            color: #f7f7f7;
+            text-decoration: none;
+            padding: 10px 13px;
+            display: block;
+            width: 100%;
+            text-align: center;
+            font-family: primary;
+            text-align: left;
+            transition: ease-in;
+        }
+
+        .sidebar a:hover {
+            background-color: #010101;
+
+            text-transform: uppercase;
+        }
+
+        .content {
+   
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 98vw;
+            width: 100%;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* Existing styles continued */
+        h1 {
+            font-size: 3vw;
+            margin-bottom: 10px;
+            font-family: fff;
+            color: #010101;
+    
+            text-align: center;
+        }
+
+        #clock {
+            margin-top: -1.2%;
+            font-family: primary;
+            color: #efefd7fd;
+            text-align: center;
+            font-size: 1vw;
+            margin-bottom: 2.5%;
+
+
+        }
+
+        #day {
+            margin-top: -0.4%;
+            font-family: primary;
+            color: #EFEFD7;
+        }
+
+     
+
+        .dot {
+            position: absolute;
+            top: 19%;
+            left: 34%;
+            width: 285px;
+            height: 185px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(59px);
+        }
+
+        .d2 {
+            position: absolute;
+            top: 59%;
+            left: 60%;
+            width: 225px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d3 {
+            position: absolute;
+            top: -8%;
+            left: 80%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d4 {
+            position: absolute;
+            top: 85%;
+            left: 78%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d5 {
+            position: absolute;
+            top: 24%;
+            left: 2%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .card-shadow {
+            position: absolute;
+            top: 51.7%;
+            left: 59.8%;
+            transform: translate(-50%, -50%);
+            height: 250px;
+            width: 300px;
+            background-color: #1f40c3fd;
+            border-radius: 28px;
+            border: 1px solid #010101;
+            z-index: 1;
+        }
+
+        .img {
+            width: 100%;
+            height: 10%;
+            background-color: #010101;
+            position: absolute;
+            bottom: 0%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        img {
+            width: 15%;
+        }
+
+        label {
+            margin-bottom: 3%;
+
+            font-family: fff;
+            color: #010101;
+        }
+
+        input[type="date"] {
+            width: 80%;
+            padding: 10px;
+        
+            border-radius: 5px;
+            font-family: primary;
+            outline: none;
+            border: 2px solid #1f40c3;
+            background-color: #EFEFD7;
+            text-align: center;
+            margin-bottom: 2px;
+            color: #010101;
+            font-weight: 900;
+            
+        }
+        button{
+            background-color: #1f40c3;
+            outline: none;
+            border: none;
+            color: #EFEFD7;
+            cursor: pointer;
+            padding: 10px;
+            width: 80%;
+            font-family: primary;
+            border-radius: 5px;
+            border: 1px solid #010101;
+        }
+        form{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            padding: 0vw 5vw;
+            margin-left: 15%;
+        }
+    </style>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+
+<body>
+    <div class="sidebar">
+        <h2>LabLog</h2>
+        <a href="/">Home<i class="ri-arrow-right-up-line"></i></a>
+        <a href="/check-in">Check-in<i class="ri-arrow-right-up-line"></i></a>
+        <a href="/check-out">Check-out<i class="ri-arrow-right-up-line"></i></a>
+        <a href="/export-data">View Attendance<i class="ri-arrow-right-up-line"></i></a>
+        <a href="/students">View Students<i class="ri-arrow-right-up-line"></i></a>
+        <a href="/export-data">Export Data<i class="ri-arrow-right-up-line"></i></a>
+        <a href="/excel">Import Data<i class="ri-arrow-right-up-line"></i></a>
+    </div>
+
+    <div class="main">
+        <div class="dot"></div>
+        <div class="dot d2"></div>
+        <div class="dot d3"></div>
+        <div class="dot d4"></div>
+        <div class="dot d5"></div>
+       
+        <div class="content">
+       
+            <form action="/attendance-rec" method="GET" id="reader">
+                <h1>View & Export Records</h1>
+                <input type="date" name="date" required>
+                <button type="submit">View Records</button>
+            </form>
+
+        </div>
+    </div>
+  
+</body>
+
+</html>

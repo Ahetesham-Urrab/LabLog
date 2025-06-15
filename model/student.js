@@ -12,3 +12,13 @@ const studentSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model("student", studentSchema);
+//<audio id="notificationSound" src="/sounds/<%= sound %>" preload="auto"></audio> 
+   //   const soundFile = "<%= sound %>";
+    //   const audio = new Audio(`/sounds/${soundFile}`);
+  
+    //   // Function to play audio
+    //   function playAudio() {
+    //       if (soundFile) {
+    //           audio.play().catch(error => console.error("Sound play error:", error));
+    //       }
+    //   }

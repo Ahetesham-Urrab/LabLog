@@ -1,40 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Information</title>
-</head>
-<body>
-  <a href="/attandance2">Back to Attendance</a>
-  <h1>Student Information</h1>
-  <p>Name: <%= student.fullname %></p>
-  <p>SID: <%= student.sid %></p>
-  <p>Roll No.: <%= student.roll %></p>
-  <p>Class: <%= student.classs %></p>
-  <p>Email: <%= student.email %></p>
-  
-  <% if (attendance) { %>
-    <h2>Attendance Status</h2>
-    <p>Status: <%= attendance.status %></p>
-    <p>Check-In Time: <%= attendance.checkInTime.toLocaleTimeString() %></p>
-    <p>Check-Out Time: <%= attendance.checkOutTime ? attendance.checkOutTime.toLocaleTimeString() : 'Not checked out yet' %></p>
-    
-    <% if (attendance.checkedOut && totalTime) { %>
-      <h2>Total Time Spent in Lab</h2>
-      <p><%= totalTime.hours %> hours and <%= totalTime.minutes %> minute</p>
-    <% } else if (attendance.checkedOut) { %>
-      <p>Total time not available.</p>
-    <% } %>
-    
-  <% } else { %>
-    <h2>Attendance Status</h2>
-    <p>Status: Absent</p>
-  <% } %>
+    <style>
+        @font-face {
+            font-family: fff;
+            src: url(/sounds/Syne-Extra.otf);
+        }
 
-  <% if (message) { %>
-    <p><strong><%= message %></strong></p>
-  <% } %>
-  
+        @font-face {
+            font-family: primary;
+            src: url(/sounds/Syne-Bold.otf);
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .main {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            background-color: #1f40c3b7;
+            overflow: hidden;
+        }
+
+        .dot {
+            position: absolute;
+            top: 19%;
+            left: 34%;
+            width: 285px;
+            height: 185px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(59px);
+        }
+
+        .d2 {
+            position: absolute;
+            top: 59%;
+            left: 60%;
+            width: 225px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d3 {
+            position: absolute;
+            top: -8%;
+            left: 80%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d4 {
+            position: absolute;
+            top: 85%;
+            left: 78%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d5 {
+            position: absolute;
+            top: 24%;
+            left: 2%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 63%;
+            width: 25%;
+            background-color: #EFEFD7;
+            border-radius: 28px;
+            border: 1px solid #010101;
+            z-index: 2;
+            padding-bottom: 18px;
+            overflow: hidden;
+        }
+
+        .card-shadow {
+            position: absolute;
+            top: 51.5%;
+            left: 50.8%;
+            transform: translate(-50%, -50%);
+            height: 63%;
+            width: 25%;
+            background-color: #1f40c3b7;
+            border-radius: 28px;
+            border: 1px solid #010101;
+            z-index: 1;
+        }
+
+        .photo {
+            height: 35%;
+            width: 100%;
+            /* background-color: #010101; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1%;
+        }
+
+        img {
+            border-radius: 18px;
+            width: 27%;
+            object-fit: cover;
+
+        }
+
+        .name {
+            height: 20%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -2%;
+        }
+
+        .name h2 {
+            font-family: fff;
+            color: #1f40c3;
+            text-align: center;
+            
+        }
+
+        .rinfo {
+            height: 15%;
+            width: 100%;
+            /* background-color: #010101; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -1%;
+            text-align: center;
+            padding: 0 2vw;
+        }
+
+        .rinfo h4 {
+            font-family: primary;
+            color: #010101;
+            font-size: 1.2vw;
+            font-weight: 900;
+        }
+
+        .rinfo p {
+            font-family: primary;
+            font-weight: bolder;
+            color: #1f40c3;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .branch {
+            height: 100%;
+            width: 33%;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .roll {
+            height: 100%;
+            width: 33%;
+
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .sid {
+            height: 100%;
+            width: 33%;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+
+        .res {
+            height: 15%;
+            width: 100%;
+         
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2%;
+        }
+        .sts{
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .sq{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 45%;
+            border-radius: 8px;
+            border: 1px solid #010101;
+            background-color: #1f40c3;
+        }
+        .sq p{
+            font-family: primary;
+            font-weight: 500;
+            color: #EFEFD7;
+            font-size: 12px;
+            font-weight: 900;
+        }
+        .sq h4 {
+            font-family: primary;
+            color: #EFEFD7;
+            font-size: 1.2vw;
+            font-weight: 900;
+        }
+        .tme{
+            height: 20%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .tmee{
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .tmee p{
+            font-family: primary;
+            font-weight: 500;
+            color: #1f40c3;
+            font-size: 12px;
+            font-weight: 900;
+        }
+        .tmee h4 {
+            font-family: primary;
+            color: #010101;
+            font-size: 1.2vw;
+            font-weight: 900;
+        }
+        .msg p{
+            font-family: primary;
+            color: #f05053;
+            font-size: 13px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- <a href="/check-out" class="back-btn">Back to Attendance</a> -->
+    <div class="main">
+
+        <div class="dot"></div>
+        <div class="dot d2"></div>
+        <div class="dot d3"></div>
+        <div class="dot d4"></div>
+        <div class="dot d5"></div>
+        <div class="card">
+            <div class="photo">
+                <img src="https://i.pinimg.com/736x/ce/65/5f/ce655f63e2068dd590aa19ec301a3c27.jpg" alt="">
+            </div>
+            <div class="name">
+                <h2>
+                    <%= student.fullname %>
+                </h2>
+            </div>
+            <div class="rinfo">
+                <div class="branch">
+                    <p>Class</p>
+                    <h4>
+                        <%= student.classs %>
+                    </h4>
+                </div>
+                <div class="roll">
+                    <p>Roll No</p>
+                    <h4>
+                        <%= student.roll %>
+                    </h4>
+                </div>
+                <div class="sid">
+                    <p>Student Id</p>
+                    <h4>
+                        <%= student.sid %>
+                    </h4>
+                </div>
+            </div>
+            <div class="res">
+                <% if (attendance) { %>
+                    
+                    <div class="sts">
+                        <div class="sq">
+                            <p>Check-In:</p>
+                            <h4><%= attendance.checkInTime.toLocaleTimeString() %></h4>
+                        </div>
+                        <div class="sq">
+                            <p>Check-Out:</p>
+                            <h4><%= attendance.checkOutTime ? attendance.checkOutTime.toLocaleTimeString() : '- -' %></h4> 
+                        </div>
+                </div>
+            </div>
+            <div class="tme">
+                <div class="tmee">
+                    <% if (attendance.checkedOut && totalTime) { %>
+                        <h4>Total Time Spent in Lab</h4>
+            <p><%= totalTime.hours %> hours and <%= totalTime.minutes %> minutes</p><% } else if (attendance.checkedOut) { %>
+                        <p class="status">- -</p>
+                    <% } %>
+                <% } else { %>
+                    <h2></h2>
+                    <p class="absent"></p>
+                <% } %>
+                <% if (message) { %>
+                  
+                    <div class="msg"><p><%= message %></p></div>
+                <% } %>
+                </div>
+            </div>
+        </div>
+        <% if (message) { %>
+            <div id="popup-message" class="popup"><%= message %><i class="fa-sharp fa-regular fa-circle-exclamation"></i></div>
+        <% } %>
+        
+        <!-- Include GSAP -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let popup = document.getElementById("popup-message");
+                if (popup) {
+                    // Animate pop-up in with 1-second delay
+                    gsap.fromTo(popup, 
+                        { y: -50, opacity: 0 }, 
+                        { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", delay: 0.5 } // 1-second delay
+                    );
+                    
+                    // Hide pop-up after 8 seconds (including delay)
+                    setTimeout(() => {
+                        gsap.to(popup, { y: -50, opacity: 0, duration: 0.4, ease: "power2.in", onComplete: () => popup.remove() });
+                    }, 3000); // 1 sec delay + 8 sec display time
+                }
+            });
+        </script>
+        <script>
+            setTimeout(() => {
+                window.location.href = "/check-in"; // Change "/" to your desired redirect URL
+            }, 6000); // 7 seconds (7000 milliseconds)
+        </script>
+        
+        <!-- CSS for Pop-up -->
+        <style>
+            .popup {
+                position: fixed;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #1f40c3;
+                color: #EFEFD7;
+                height: 8%;
+                width: 25%;
+                border-radius: 5px;
+                font-size: 16px;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                font-family: primary;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #010101;
+                text-align: center;
+            }
+        </style>
+        
+        
+    </div>
+    <div class="card-shadow"></div>
+
+    <audio id="notificationSound" src="/sounds/<%= sound %>" preload="auto"></audio>
+    <script>
+        const soundFile = "<%= sound %>";
+        const audio = new Audio(`/sounds/${soundFile}`);
+
+        // Function to play audio
+        function playAudio() {
+            if (soundFile) {
+                audio.play().catch(error => console.error("Sound play error:", error));
+            }
+        }
+
+        // Call the function to play audio on page load
+        window.onload = function () {
+            playAudio();
+        };
+
+        const speechSettings = {
+            pitch: 1,
+            rate: 0.9,
+            volume: 1, // Volume should be between 0 and 1
+            lang: "en-GB" // Change to your preferred language
+        };
+
+        function speak(txt) {
+            if ('speechSynthesis' in window) {
+                let ts = new SpeechSynthesisUtterance(txt);
+                ts.pitch = speechSettings.pitch;
+                ts.rate = speechSettings.rate;
+                ts.volume = speechSettings.volume;
+                ts.lang = speechSettings.lang;
+                window.speechSynthesis.speak(ts);
+            } else {
+                console.log("Speech Synthesis not supported in this browser.");
+            }
+        }
+
+        // Call the function if a message is available
+        const message = "<%= message %>";
+        if (message) {
+            speak(message);
+        }
+    </script>
+
+
 </body>
+
 </html>

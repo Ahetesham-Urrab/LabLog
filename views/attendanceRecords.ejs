@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Records</title>
+    <style>
+   * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}     
+.dot {
+            position: absolute;
+            top: 19%;
+            left: 34%;
+            width: 285px;
+            height: 185px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(59px);
+        }
+
+        .d2 {
+            position: absolute;
+            top: 59%;
+            left: 60%;
+            width: 225px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d3 {
+            position: absolute;
+            top: -8%;
+            left: 80%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d4 {
+            position: absolute;
+            top: 85%;
+            left: 78%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+
+        .d5 {
+            position: absolute;
+            top: 24%;
+            left: 2%;
+            width: 325px;
+            height: 225px;
+            background-color: #EFEFD7;
+            border-radius: 50px;
+            filter: blur(98px);
+        }
+   @font-face {
+            font-family: fff;
+            src: url(/sounds/Syne-Extra.otf);
+        }
+
+        @font-face {
+            font-family: primary;
+            src: url(/sounds/Syne-Bold.otf);
+        }
+.main{
+    position: relative;
+            height: 100vh;
+            width: 100%;
+            background-color: #f7f7f7;
+            overflow: hidden;
+        padding: 2%;
+}
+
+
+/* Header */
+h2 {
+    margin-bottom: 3%;
+    text-align: center;
+    color: #010101;
+    font-family: fff;
+}
+
+/* Form */
+form {
+    background: #f9f9f9;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+    margin-right: 3px;
+    font-family: primary;
+}
+
+input[type="date"] {
+    padding: 5px;
+  
+    border-radius: 5px;
+    font-family: primary;
+            outline: none;
+            border: 2px solid #1f40c3;
+            background-color: #f7f7f7;
+            text-align: center;
+           width: 69%;
+            color: #010101;
+            font-weight: 900;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #1f40c3;
+    color: #f9f9f9;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+    font-family:primary;
+   
+}
+
+button:hover {
+    background-color: #142c86;
+}
+
+/* Export Buttons */
+.export-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1%;
+
+    width: 100%;
+}
+
+.export-buttons form {
+    display: inline-block;  
+    background-color: #f9f9f9;
+    border: 1px solid #010101;
+    align-items: center;
+    justify-content: baseline;
+    
+}
+.f1{
+    width: 50%;
+    
+}
+.f2 button{
+    height: 100%;
+    width: 100%;
+}
+.f2{
+    width: 24%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Table */
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+    background: #f9f9f9;
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 999;
+    margin-top: -1.5%;
+   
+   
+}
+
+th, td {
+    font-family: primary;
+    border: 1px solid #010101;
+    padding: 8px;
+    text-align: left;
+
+  
+}
+.ig{
+    height: 100%;
+    width: 10%;
+    background-color: #1f40c3;
+}
+
+th {
+    background-color: #1f40c3;
+    color: #EFEFD7;
+    font-family: fff;
+    text-align: center;
+   
+}
+.f2 img{
+
+    width: 15px;
+
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #e8e8e8;
+}
+.nme{
+    width: 30%;
+}
+.email{
+    text-transform: lowercase;
+}
+    </style>
+</head>
+<body>
+    <div class="main">
+    <h2>Attendance Records for <%= selectedDate %></h2>
+
+    <!-- 🔹 Date Picker Form -->
+  
+
+    <!-- 🔹 Export Buttons -->
+    <div class="export-buttons">
+        <form action="/attendance-rec" method="GET" class="f1">
+            <label for="date">Select Date:</label>
+            <input type="date" id="date" name="date" value="<%= selectedDate || '' %>">
+            <button type="submit">Search</button>
+        </form>
+        <form action="/export-csv" method="POST"  class="f2">
+            <input type="hidden" name="date" value="<%= selectedDate %>">
+            <button type="submit">Export to CSV <img src="https://static.vecteezy.com/system/resources/previews/027/179/363/original/microsoft-excel-icon-logo-symbol-free-png.png" alt="">  </button>     </form>
+        <form action="/export-pdf" method="POST"  class="f2">
+            <input type="hidden" name="date" value="<%= selectedDate %>">
+            <button type="submit">Export to PDF <img src="https://www.pngkey.com/png/full/342-3429213_adobe-pdf-logo-pdf-file-icon-vector.png" alt="">
+            </button>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="nme">Name</th>
+                <th>SID</th>
+                <th>Email</th>
+                <th>Roll No.</th>
+                <th>Class</th>
+                <th>Check-In Time</th>
+                <th>Check-Out Time</th>
+                <th>Total Time</th>
+            
+            </tr>
+        </thead>
+        <tbody>
+            <% if (records.length > 0) { %>
+                <% records.forEach(record => { %>
+                    <tr>
+                        <td><%= record.studentName %></td>
+                        <td><%= record.sid %></td>
+                        <td class="email"><%= record.email %></td>
+                        <td><%= record.roll %></td>
+                        <td><%= record.classs %></td>
+                        <td><%= record.checkInTime %></td>
+                        <td><%= record.checkOutTime %></td>
+                        <td><%= record.totalTime %></td>
+                        
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="9">No records found</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+ 
+</div>
+
+</body>
+</html>

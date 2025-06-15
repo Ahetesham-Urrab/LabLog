@@ -5,16 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student List</title>
 </head>
+<style>
+    /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 20px;
+    padding: 0;
+}
+
+h1 {
+    color: #1f40c3;
+    text-align: center;
+    font-family: fff;
+}
+
+a {
+    display: inline-block;
+    margin-bottom: 15px;
+    text-decoration: none;
+    background-color: #1f40c3;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-family: primary;
+}
+
+a:hover {
+    background-color: #142c86;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #f9f9f9;
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 999;
+    border: 1px solid #010101;
+}
+
+th, td {
+    font-family: Arial, sans-serif;
+    border: 1px solid #010101;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #1f40c3;
+    color: #EFEFD7;
+    font-weight: bold;
+    text-align: center;
+    font-family: fff;
+    border: 1px solid #010101;
+}
+td{
+    font-family: primary;
+}
+/* Alternate row coloring */
+tbody tr:nth-child(even) {
+    background-color: #f1f1f1;
+}
+@font-face {
+            font-family: fff;
+            src: url(/sounds/Syne-Extra.otf);
+        }
+
+        @font-face {
+            font-family: primary;
+            src: url(/sounds/Syne-Bold.otf);
+        }
+tbody tr:hover {
+    background-color: #e0e0e0;
+}
+
+/* Column Widths */
+th:nth-child(1), td:nth-child(1) {
+    width: 8%;
+    text-align: center;
+}
+
+th:nth-child(2), td:nth-child(2) {
+    width: 20%;
+}
+
+th:nth-child(3), td:nth-child(3) {
+    width: 25%;
+    text-transform: lowercase;
+}
+
+th:nth-child(4), td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+}
+
+th:nth-child(5), td:nth-child(5) {
+    width: 12%;
+    text-align: center;
+}
+
+th:nth-child(6), td:nth-child(6) {
+    width: 15%;
+    text-align: center;
+}
+
+/* Barcode Image Styling */
+td img {
+    display: block;
+    margin: auto;
+    max-width: 70%;
+}
+
+</style>
 <body>
     <h1>Student List</h1>
-    <a href="/attandance2">Back to Attendance</a>
+
 
     <% if (students.length > 0) { %>
+        <% students.sort((a, b) => a.roll - b.roll); %> <!-- Sorting by Roll Number -->
+        
         <table border="1">
             <thead>
                 <tr>
-                    <th>Serial No.</th> <!-- Added Serial No. header -->
-                    <th>Name</th>
+                    <th>Serial No.</th>
+                    <th class="name">Name</th>
                     <th>Email</th>
                     <th>Roll No.</th>
                     <th>Class</th>
@@ -23,15 +139,15 @@
                 </tr>
             </thead>
             <tbody>
-                <% students.forEach((student, index) => { %> <!-- Added index parameter -->
+                <% students.forEach((student, index) => { %>
                     <tr>
-                        <td><%= index + 1 %></td> <!-- Display serial number -->
+                        <td><%= index + 1 %></td>
                         <td><%= student.fullname %></td>
                         <td><%= student.email %></td>
                         <td><%= student.roll %></td>
                         <td><%= student.classs %></td>
                         <td><%= student.sid %></td>
-                        <td><img src="<%= student.barcode %>" style="width: 70%;"></td>
+                        <td><img src="<%= student.barcode %>"></td>
                     </tr>
                 <% }); %>
             </tbody>

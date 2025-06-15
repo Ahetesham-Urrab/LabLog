@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students in <%= batch.name %></title>
+</head>
+<body>
+    <h1>Students in Batch: <%= batch.name %></h1>
+    <h2>Timing: <%= batch.timing %></h2>
+    <h2>Days: <%= batch.days.join(', ') %></h2>
+
+    <% if (batch.students.length > 0) { %>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>SID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% batch.students.forEach(student => { %>
+                    <tr>
+                        <td><%= student.sid %></td>
+                        <td><%= student.name %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>No students in this batch.</p>
+    <% } %>
+
+    <a href="/batches">Back to Batches</a> <!-- Link back to all batches -->
+</body>
+</html>
