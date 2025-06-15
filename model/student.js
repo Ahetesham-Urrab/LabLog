@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://127.0.0.1:27017/qrSystem");
+// mongoose.connect("mongodb://127.0.0.1:27017/qrSystem");
+mongoose.connect("mongodb+srv://ahetexam:ahete1555@cluster0.fzocqkz.mongodb.net/project?retryWrites=true&w=majority&appName=Cluster0", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB Atlas connected successfully"))
+.catch((err) => console.error("❌ MongoDB connection error:", err));
+
 
 const studentSchema = mongoose.Schema({
   fullname: String,
